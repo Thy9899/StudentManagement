@@ -4,7 +4,10 @@ const classController = require("../Controller/classes.controller");
 const authMiddleware = require("../Middleware/authMiddleware");
 
 //GET all classes
-router.get("/", authMiddleware, classController.getAllClasses);
+router.get("/GetClasses", authMiddleware, classController.getAllClasses);
+
+//GET all classes data
+router.get("/", authMiddleware, classController.getAllClassesData);
 
 //GET a class by ID
 router.get("/:id", authMiddleware, classController.getClassById);

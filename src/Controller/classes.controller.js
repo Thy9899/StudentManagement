@@ -1,12 +1,44 @@
 const Classes = require("../Models/classes");
 const Teacher = require("../Models/teacher");
+const Subject = require("../Models/subject");
+const Student = require("../Models/student");
 
 //GET all classes
 const getAllClasses = async (req, res) => {
   try {
     const classes = await Classes.find().populate("teacherId", "username");
 
-    res.status(200).json(classes);
+    res.status(200).json({
+      classes: classes.map((Class) => ({
+        classId: Class._id,
+        className: Class.className,
+        academyYear: Class.academyYear,
+        // teacherName: Class.teacherId.username,
+      })),
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+//GET all classes data
+const getAllClassesData = async (req, res) => {
+  try {
+    const classes = await Classes.find()
+      .populate("teacherId", "username")
+      .populate("subjectId", "subjectName")
+      .populate("students", "studentName");
+
+    res.status(200).json({
+      classes: classes.map((cls) => ({
+        classId: cls._id,
+        className: cls.className,
+        academyYear: cls.academyYear,
+        teacherName: cls.teacherId?.username ?? "No teacher assigned",
+        subjectName: cls.subjectId?.subjectName ?? "No subject assigned",
+        students: cls.students.map((student) => student.student_Name ?? ""),
+      })),
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -110,6 +142,7 @@ const deleteClass = async (req, res) => {
 
 module.exports = {
   getAllClasses,
+  getAllClassesData,
   getClassById,
   createClass,
   updateClass,

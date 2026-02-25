@@ -9,7 +9,16 @@ const getAllTeacherAssignments = async (req, res) => {
       .populate("subjectId", "subjectName")
       .populate("classId", "className academyYear");
 
-    res.status(200).json(assignments);
+    res.status(200).json({
+      assignments: assignments.map((assignment) => ({
+        assignmentId: assignment._id,
+        teacherName: assignment.teacherId?.username ?? "No teacher assigned",
+        subjectName: assignment.subjectId?.subjectName ?? "No subject assigned",
+        className: assignment.classId?.className ?? "No class assigned",
+        academyYear:
+          assignment.classId?.academyYear ?? "No academy year assigned",
+      })),
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }

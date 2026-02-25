@@ -5,7 +5,12 @@ const getAllSubjects = async (req, res) => {
   try {
     const subjects = await Subject.find();
 
-    res.status(200).json(subjects);
+    res.status(200).json({
+      subjects: subjects.map((subject) => ({
+        subjectId: subject._id,
+        subjectName: subject.subjectName,
+      })),
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
