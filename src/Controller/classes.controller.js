@@ -35,6 +35,13 @@ const createClass = async (req, res) => {
   try {
     const { className, academyYear, teacherId } = req.body;
 
+    // if (!req.user?.is_teacher)
+    //   return res.status(403).json({ error: "Access denied" });
+
+    // if (req.user.role !== "admin") {
+    //   return res.status(403).json({ message: "Forbidden" });
+    // }
+
     if (!className || !academyYear || !teacherId) {
       return res.status(400).json({ message: "All fields are required" });
     }

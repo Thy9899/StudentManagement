@@ -1,17 +1,18 @@
 const expess = require("express");
 const router = expess.Router();
 const classController = require("../Controller/classes.controller");
+const authMiddleware = require("../Middleware/authMiddleware");
 
 //GET all classes
-router.get("/", classController.getAllClasses);
+router.get("/", authMiddleware, classController.getAllClasses);
 
 //GET a class by ID
-router.get("/:id", classController.getClassById);
+router.get("/:id", authMiddleware, classController.getClassById);
 
 //CREATE a new class
-router.post("/", classController.createClass);
+router.post("/", authMiddleware, classController.createClass);
 
 //UPDATE a class by ID
-router.put("/:id", classController.updateClass);
+router.put("/:id", authMiddleware, classController.updateClass);
 
 module.exports = router;
