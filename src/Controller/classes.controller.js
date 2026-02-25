@@ -1,7 +1,7 @@
 const Classes = require("../Models/classes");
 const Teacher = require("../Models/teacher");
-const Subject = require("../Models/subject");
 const Student = require("../Models/student");
+const teacherAssignment = require("../Models/teacherAssignment");
 
 //GET all classes
 const getAllClasses = async (req, res) => {
@@ -24,41 +24,84 @@ const getAllClasses = async (req, res) => {
 //GET all classes data
 const getAllClassesData = async (req, res) => {
   try {
-    const classes = await Classes.find()
-      .populate("teacherId", "username")
-      .populate("subjectId", "subjectName")
-      .populate("students", "studentName");
+    const classes = await Classes.find();
 
-    res.status(200).json({
-      classes: classes.map((cls) => ({
-        classId: cls._id,
-        className: cls.className,
-        academyYear: cls.academyYear,
-        teacherName: cls.teacherId?.username ?? "No teacher assigned",
-        subjectName: cls.subjectId?.subjectName ?? "No subject assigned",
-        students: cls.students.map((student) => student.student_Name ?? ""),
-      })),
-    });
+    const result = await Promise.all(
+      classes.map(async (cls) => {
+        // get students by classId
+        const students = await Student.find(
+          { classId: cls._id, isActive: true },
+          "student_Name",
+        );
+
+        const assignments = await teacherAssignment
+          .find({ classId: cls._id })
+          .populate("teacherId", "username")
+          .populate("subjectId", "subjectName");
+
+        return {
+          classId: cls._id,
+          className: cls.className,
+          academyYear: cls.academyYear,
+
+          students: students.map((s) => s.student_Name),
+
+          teachingAssignments: assignments.map((a) => ({
+            teacher: a.teacherId?.username ?? "",
+            subject: a.subjectId?.subjectName ?? "",
+          })),
+        };
+      }),
+    );
+
+    res.status(200).json({ classes: result });
   } catch (error) {
-    res.status(500).json({ message: "Server error", error: error.message });
+    res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
   }
 };
 
-//GET a class by ID
+// GET a class by ID
 const getClassById = async (req, res) => {
   try {
-    const classData = await Classes.findById(req.params.id).populate(
-      "teacherId",
-      "username",
-    );
+    const cls = await Classes.findById(req.params.id);
 
-    if (!classData) {
+    if (!cls) {
       return res.status(404).json({ message: "Class not found" });
     }
 
-    res.status(200).json(classData);
+    // get students by classId
+    const students = await Student.find(
+      { classId: cls._id, isActive: true },
+      "student_Name",
+    );
+
+    const assignments = await teacherAssignment
+      .find({ classId: cls._id })
+      .populate("teacherId", "username")
+      .populate("subjectId", "subjectName");
+
+    const result = {
+      classId: cls._id,
+      className: cls.className,
+      academyYear: cls.academyYear,
+
+      students: students.map((s) => s.student_Name),
+
+      teachingAssignments: assignments.map((a) => ({
+        teacher: a.teacherId?.username ?? "",
+        subject: a.subjectId?.subjectName ?? "",
+      })),
+    };
+
+    res.status(200).json({ class: result });
   } catch (error) {
-    res.status(500).json({ message: "Server error", error: error.message });
+    res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
   }
 };
 

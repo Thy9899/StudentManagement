@@ -1,7 +1,4 @@
 const mongoose = require("mongoose");
-const Subject = require("./subject");
-const Teacher = require("./teacher");
-const Class = require("./classes");
 
 const teacherAssignmentSchema = new mongoose.Schema({
   teacherId: {
@@ -19,6 +16,18 @@ const teacherAssignmentSchema = new mongoose.Schema({
     ref: "Class",
     required: true,
   },
+
+  // optional but professional
+  assignedAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
+
+// prevent duplicate assignment
+teacherAssignmentSchema.index(
+  { teacherId: 1, subjectId: 1, classId: 1 },
+  { unique: true },
+);
 
 module.exports = mongoose.model("TeacherAssignment", teacherAssignmentSchema);
