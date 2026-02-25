@@ -15,7 +15,7 @@ const studentSchema = new mongoose.Schema({
     enum: ["Male", "Female", "Other"],
     required: true,
   },
-  date_of_birth: {
+  DateOfBirth: {
     type: Date,
     required: true,
   },

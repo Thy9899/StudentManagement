@@ -38,13 +38,13 @@ connectDB();
 app.use("/api/teacher", teacherRoutes);
 
 // STUDENT ROUTES
-app.use("/api/student", studentRoutes);
+app.use("/api/students", studentRoutes);
 
 // CLASS ROUTES
-app.use("/api/class", classRoutes);
+app.use("/api/classes", classRoutes);
 
 // SUBJECT ROUTES
-app.use("/api/subject", subjectRoutes);
+app.use("/api/subjects", subjectRoutes);
 
 // TEACHER ASSIGNMENT ROUTES
 app.use("/api/teacher-assignment", teacherAssignmentRoutes);

@@ -9,7 +9,17 @@ const getAllStudents = async (req, res) => {
       "className academyYear",
     );
 
-    res.status(200).json(students);
+    res.status(200).json({
+      students: students.map((student) => ({
+        studentId: student._id,
+        student_Code: student.student_Code,
+        student_Name: student.student_Name,
+        gender: student.gender,
+        dateOfBirth: student.DateOfBirth,
+        className: student.classId.className,
+        isActive: student.isActive,
+      })),
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -18,16 +28,24 @@ const getAllStudents = async (req, res) => {
 //GET a student by ID
 const getStudentById = async (req, res) => {
   try {
-    const student = await Student.findById(req.params.id).populate(
+    const students = await Student.findById(req.params.id).populate(
       "classId",
       "className academyYear",
     );
 
-    if (!student) {
+    if (!students) {
       return res.status(404).json({ message: "Student not found" });
     }
 
-    res.status(200).json(student);
+    res.status(200).json({
+      studentId: students._id,
+      student_Code: students.student_Code,
+      student_Name: students.student_Name,
+      gender: students.gender,
+      dateOfBirth: students.DateOfBirth,
+      className: students.classId.className,
+      isActive: students.isActive,
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -36,16 +54,10 @@ const getStudentById = async (req, res) => {
 //CREATE a new student
 const createStudent = async (req, res) => {
   try {
-    const { student_Code, student_Name, gender, date_of_birth, classId } =
+    const { student_Code, student_Name, gender, dateOfBirth, classId } =
       req.body;
 
-    if (
-      !student_Code ||
-      !student_Name ||
-      !gender ||
-      !date_of_birth ||
-      !classId
-    ) {
+    if (!student_Code || !student_Name || !gender || !dateOfBirth || !classId) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -59,7 +71,7 @@ const createStudent = async (req, res) => {
       student_Code,
       student_Name,
       gender,
-      date_of_birth,
+      DateOfBirth: dateOfBirth,
       classId,
     });
 
@@ -77,12 +89,12 @@ const createStudent = async (req, res) => {
 //UPDATE a student by ID
 const updateStudent = async (req, res) => {
   try {
-    const { student_Code, student_Name, gender, date_of_birth, classId } =
+    const { student_Code, student_Name, gender, dateOfBirth, classId } =
       req.body;
 
     const updatedStudent = await Student.findByIdAndUpdate(
       req.params.id,
-      { student_Code, student_Name, gender, date_of_birth, classId },
+      { student_Code, student_Name, gender, dateOfBirth, classId },
       { new: true },
     );
 
