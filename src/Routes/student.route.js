@@ -15,4 +15,7 @@ router.post("/", authMiddleware, studentController.createStudent);
 //UPDATE a student by ID
 router.put("/:id", authMiddleware, studentController.updateStudent);
 
+//DELETE a student by ID
+router.delete("/:id", authMiddleware, studentController.deleteStudent);
+
 module.exports = router;
