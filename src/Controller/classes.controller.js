@@ -108,7 +108,7 @@ const getClassById = async (req, res) => {
 //CREATE a new class
 const createClass = async (req, res) => {
   try {
-    const { className, academicYear, teacherId } = req.body;
+    const { className, academicYear } = req.body;
 
     // if (!req.user?.is_teacher)
     //   return res.status(403).json({ error: "Access denied" });
@@ -117,20 +117,20 @@ const createClass = async (req, res) => {
     //   return res.status(403).json({ message: "Forbidden" });
     // }
 
-    if (!className || !academicYear || !teacherId) {
+    if (!className || !academicYear) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
     // check class exists (VERY IMPORTANT)
-    const teacherExists = await Teacher.findById(teacherId);
-    if (!teacherExists) {
-      return res.status(404).json({ message: "Teacher not found" });
-    }
+    // const teacherExists = await Teacher.findById(teacherId);
+    // if (!teacherExists) {
+    //   return res.status(404).json({ message: "Teacher not found" });
+    // }
 
     const newClass = new Classes({
       className,
       academicYear,
-      teacherId,
+      // teacherId,
     });
 
     await newClass.save();
