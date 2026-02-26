@@ -12,7 +12,7 @@ const getAllClasses = async (req, res) => {
       classes: classes.map((Class) => ({
         classId: Class._id,
         className: Class.className,
-        academyYear: Class.academyYear,
+        academicYear: Class.academicYear,
         // teacherName: Class.teacherId.username,
       })),
     });
@@ -42,7 +42,7 @@ const getAllClassesData = async (req, res) => {
         return {
           classId: cls._id,
           className: cls.className,
-          academyYear: cls.academyYear,
+          academicYear: cls.academicYear,
 
           students: students.map((s) => s.student_Name),
 
@@ -86,7 +86,7 @@ const getClassById = async (req, res) => {
     const result = {
       classId: cls._id,
       className: cls.className,
-      academyYear: cls.academyYear,
+      academicYear: cls.academicYear,
 
       students: students.map((s) => s.student_Name),
 
@@ -108,7 +108,7 @@ const getClassById = async (req, res) => {
 //CREATE a new class
 const createClass = async (req, res) => {
   try {
-    const { className, academyYear, teacherId } = req.body;
+    const { className, academicYear, teacherId } = req.body;
 
     // if (!req.user?.is_teacher)
     //   return res.status(403).json({ error: "Access denied" });
@@ -117,7 +117,7 @@ const createClass = async (req, res) => {
     //   return res.status(403).json({ message: "Forbidden" });
     // }
 
-    if (!className || !academyYear || !teacherId) {
+    if (!className || !academicYear || !teacherId) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -129,7 +129,7 @@ const createClass = async (req, res) => {
 
     const newClass = new Classes({
       className,
-      academyYear,
+      academicYear,
       teacherId,
     });
 
@@ -147,11 +147,11 @@ const createClass = async (req, res) => {
 //UPDATE a class by ID
 const updateClass = async (req, res) => {
   try {
-    const { classId, className, academyYear, teacherId } = req.body;
+    const { classId, className, academicYear, teacherId } = req.body;
 
     const updatedClass = await Classes.findByIdAndUpdate(
       req.params.id,
-      { classId, className, academyYear, teacherId },
+      { classId, className, academicYear, teacherId },
       { new: true },
     );
 

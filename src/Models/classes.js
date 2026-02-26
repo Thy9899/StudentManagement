@@ -5,7 +5,7 @@ const classSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  academyYear: {
+  academicYear: {
     type: String,
     required: true,
   },
