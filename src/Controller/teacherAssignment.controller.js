@@ -7,7 +7,7 @@ const getAllTeacherAssignments = async (req, res) => {
       .find()
       .populate("teacherId", "username")
       .populate("subjectId", "subjectName")
-      .populate("classId", "className academyYear");
+      .populate("classId", "className academicYear");
 
     res.status(200).json({
       assignments: assignments.map((assignment) => ({
@@ -15,8 +15,8 @@ const getAllTeacherAssignments = async (req, res) => {
         teacherName: assignment.teacherId?.username ?? "No teacher assigned",
         subjectName: assignment.subjectId?.subjectName ?? "No subject assigned",
         className: assignment.classId?.className ?? "No class assigned",
-        academyYear:
-          assignment.classId?.academyYear ?? "No academy year assigned",
+        academicYear:
+          assignment.classId?.academicYear ?? "No academy year assigned",
       })),
     });
   } catch (error) {
@@ -31,7 +31,7 @@ const getTeacherAssignmentById = async (req, res) => {
       .findById(req.params.id)
       .populate("teacherId", "username")
       .populate("subjectId", "subjectName")
-      .populate("classId", "className academyYear");
+      .populate("classId", "className academicYear");
 
     if (!assignment) {
       return res.status(404).json({ message: "Teacher assignment not found" });

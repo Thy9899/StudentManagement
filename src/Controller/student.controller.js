@@ -6,7 +6,7 @@ const getAllStudents = async (req, res) => {
   try {
     const students = await Student.find().populate(
       "classId",
-      "className academyYear",
+      "className academicYear",
     );
 
     res.status(200).json({
@@ -30,7 +30,7 @@ const getStudentById = async (req, res) => {
   try {
     const students = await Student.findById(req.params.id).populate(
       "classId",
-      "className academyYear",
+      "className academicYear",
     );
 
     if (!students) {
