@@ -53,6 +53,8 @@ const getTeacherAssignmentById = async (req, res) => {
 //CREATE a new teacher assignment
 const createTeacherAssignment = async (req, res) => {
   try {
+    console.log("BODY RECEIVED:", req.body);
+
     const { teacherId, subjectId, classId } = req.body;
 
     if (!teacherId || !subjectId || !classId) {
@@ -84,7 +86,16 @@ const createTeacherAssignment = async (req, res) => {
       assignment: newAssignment,
     });
   } catch (error) {
-    res.status(500).json({ message: "Server error", error: error.message });
+    if (error.code === 11000) {
+      return res.status(409).json({
+        message: "This assignment already exists",
+      });
+    }
+
+    res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
   }
 };
 
