@@ -37,7 +37,14 @@ const getTeacherAssignmentById = async (req, res) => {
       return res.status(404).json({ message: "Teacher assignment not found" });
     }
 
-    res.status(200).json(assignment);
+    res.status(200).json({
+      assignmentId: assignment._id,
+      teacherName: assignment.teacherId?.username ?? "No teacher assigned",
+      subjectName: assignment.subjectId?.subjectName ?? "No subject assigned",
+      className: assignment.classId?.className ?? "No class assigned",
+      academicYear:
+        assignment.classId?.academicYear ?? "No academy year assigned",
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -50,6 +57,18 @@ const createTeacherAssignment = async (req, res) => {
 
     if (!teacherId || !subjectId || !classId) {
       return res.status(400).json({ message: "All fields are required" });
+    }
+
+    const exists = await teacherAssignment.findOne({
+      teacherId,
+      subjectId,
+      classId,
+    });
+
+    if (exists) {
+      return res.status(409).json({
+        message: "This assignment already exists",
+      });
     }
 
     const newAssignment = new teacherAssignment({
